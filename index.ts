@@ -10,6 +10,7 @@ import dailyLog from './routes/dailyLog'
 import setGoal from './routes/setGoal'
 import cookieParser from "cookie-parser"
 import dailyProgress from "./routes/dailyLogRoutes"
+import sleepRoutes from "./routes/sleep"
 import "."; 
 dotenv.config();
 const app = express();
@@ -51,7 +52,6 @@ app.post("/signup", async (req: Request, res: Response): Promise<void> => {
         await prisma.user.create({
             data: { username, password: hashedPassword }
         });
-
         res.status(201).json({
             message: "User signed up!",
             username,
@@ -147,7 +147,7 @@ app.get("/verify-auth", userMiddleware, async (req: Request, res: Response): Pro
 app.use('/dailyLog', dailyLog)
 app.use('/setGoal', setGoal)
 app.use('/daily-progress', dailyProgress)
-
+app.use('/api/sleep',sleepRoutes)
 
 
 
