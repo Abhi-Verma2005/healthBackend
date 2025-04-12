@@ -16,20 +16,66 @@ model User {
 }
 
 model DailyLog {
-  id         String   @id @default(uuid())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  waterIntake Float   
-  mood        String  
-  weight      Float    
-  sleepHours  Float    
-  steps       Int     
-  mealQuality String  
-  symptoms    String? 
-  date       DateTime @default(now()) 
+  id        String     @id @default(uuid())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  date      DateTime   @default(now())
 
-  @@unique([userId, date]) 
+  nutrition Nutrition?
+  sleep     Sleep?
+  mood      Mood?
+  water     Water?
+
+  @@unique([userId, date])
 }
 
+model Nutrition {
+  id                  String    @id @default(uuid())
+  finalScore          Int
+  protein             Int
+  fats                Int
+  carbs               Int
+  vitamins            Int  
+  calories            Int
+  dailyRecommndations String[]
+  dailyLogId          String   @unique
+  dailyLog            DailyLog @relation(fields: [dailyLogId], references: [id])
+  date                DateTime @default(now())
+}
 
+model Sleep {
+  id                  String    @id @default(uuid())
+  finalScore          Int
+  quality             Int
+  duration            Int
+  consistency         Int
+  environment         Int
+  habits              Int
+  dailyRecommndations String[]
+  dailyLogId          String   @unique
+  dailyLog            DailyLog @relation(fields: [dailyLogId], references: [id])
+  date                DateTime @default(now())
+}
 
+model Mood {
+  id                    String    @id @default(uuid())
+  finalScore            Int
+  happiness             Int
+  energy                Int
+  focus                 Int
+  calm                  Int
+  optimism              Int
+  dailyRecommndations   String[]
+  dailyLogId            String   @unique
+  dailyLog              DailyLog @relation(fields: [dailyLogId], references: [id])
+  date                  DateTime @default(now())
+}
+
+model Water {
+  id                    String    @id @default(uuid())
+  finalScore            Int
+  dailyRecommndations   String[]
+  dailyLogId            String   @unique
+  dailyLog              DailyLog @relation(fields: [dailyLogId], references: [id])
+  date                  DateTime @default(now())
+}

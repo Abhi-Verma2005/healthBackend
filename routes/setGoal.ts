@@ -1,19 +1,15 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
+import { userMiddleware } from '../middlewares/auth';
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// Middleware to verify authenticated user (assuming you have this implemented)
-const authenticateUser = (req: Request, res: Response, next: Function) => {
-  // Authentication logic here
-  // Sets req.userId if authenticated
-  next();
-};
+
 
 // Set Health Goal endpoint - corresponds to the GoalSetup page
-router.post('/health-goal', authenticateUser, async (req: Request, res: Response): Promise<void> => {
+router.post('/health-goal', userMiddleware, async (req: Request, res: Response): Promise<void> => {
   const schema = z.object({
     goal: z.enum(['Lose weight', 'Improve sleep', 'Gain muscle', 'Manage stress'], {
       required_error: "Please select a health goal.",
@@ -58,7 +54,7 @@ router.post('/health-goal', authenticateUser, async (req: Request, res: Response
 });
 
 // Get user's health goal and plan
-router.get('/health-goal', authenticateUser, async (req: Request, res: Response): Promise<void> => {
+router.get('/health-goal', userMiddleware, async (req: Request, res: Response): Promise<void> => {
   try {
     //@ts-expect-error: no need here
     const userId = req.user.id;
@@ -86,7 +82,7 @@ router.get('/health-goal', authenticateUser, async (req: Request, res: Response)
 });
 
 // Add daily log endpoint
-router.post('/daily-log', authenticateUser, async (req: Request, res: Response): Promise<void> => {
+router.post('/daily-log', userMiddleware, async (req: Request, res: Response): Promise<void> => {
   const schema = z.object({
     waterIntake: z.number().min(0, "Water intake must be a positive number"),
     mood: z.string().min(1, "Mood is required"),
@@ -171,7 +167,7 @@ router.post('/daily-log', authenticateUser, async (req: Request, res: Response):
 });
 
 // Get daily logs for a specific date range
-router.get('/daily-logs', authenticateUser, async (req: Request, res: Response) => {
+router.get('/daily-logs', userMiddleware, async (req: Request, res: Response) => {
   try {
     //@ts-expect-error: no need here
     const userId = req.user.id;
@@ -199,7 +195,7 @@ router.get('/daily-logs', authenticateUser, async (req: Request, res: Response) 
 });
 
 // Get latest daily log
-router.get('/daily-log/latest', authenticateUser, async (req: Request, res: Response): Promise<void> => {
+router.get('/daily-log/latest', userMiddleware, async (req: Request, res: Response): Promise<void> => {
   try {
     //@ts-expect-error: no need here
     const userId = req.user.id;
