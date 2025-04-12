@@ -1,4 +1,3 @@
-// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,9 +8,28 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
+  id        String     @id @default(uuid())
+  username  String     @unique
   password  String
-  email     String   @unique
+  goal      String?    
+  dailyLogs DailyLog[]
 }
+
+model DailyLog {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  waterIntake Float   
+  mood        String  
+  weight      Float    
+  sleepHours  Float    
+  steps       Int     
+  mealQuality String  
+  symptoms    String? 
+  date       DateTime @default(now()) 
+
+  @@unique([userId, date]) 
+}
+
+
 

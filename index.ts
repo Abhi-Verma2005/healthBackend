@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:3000",
     credentials: true,
   });
 
@@ -23,7 +23,6 @@ app.post("/signup", async (req: Request, res: Response): Promise<void> => {
     const userpfp = "";
 
     const requiredBody = z.object({
-        email: z.string().email(),
         username: z.string().min(3).max(100),
         password: z.string().min(6).max(100),
     });
@@ -34,24 +33,23 @@ app.post("/signup", async (req: Request, res: Response): Promise<void> => {
         return 
     }
 
-    const { email, password, username } = parsedData.data;
+    const { password, username } = parsedData.data;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
-        const existingUser = await prisma.user.findUnique({ where: { email } });
+        const existingUser = await prisma.user.findUnique({ where: { username } });
         if (existingUser) {
             res.status(205).json({ message: "Email already registered" });
             return 
         }
 
         await prisma.user.create({
-            data: { email, username, password: hashedPassword }
+            data: { username, password: hashedPassword }
         });
 
         res.status(201).json({
             message: "User signed up!",
             username,
-            userpfp,
         });
         return 
 
@@ -64,11 +62,11 @@ app.post("/signup", async (req: Request, res: Response): Promise<void> => {
 
 
 app.post("/signin", async (req: Request, res: Response): Promise<void> => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
     
     try {
-        const foundUser = await prisma.user.findUnique({ where: { email } });
+        const foundUser = await prisma.user.findUnique({ where: { username } });
         if (!foundUser) {
             res.status(403).json({ message: "User not found!" });
             return 
@@ -93,7 +91,6 @@ app.post("/signin", async (req: Request, res: Response): Promise<void> => {
           })
         res.status(200).json({
             username: foundUser.username,
-            email: foundUser.email,
         });
         return 
 
@@ -104,7 +101,15 @@ app.post("/signin", async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-app.get("/",userMiddleware,(req,res)=>{
+app.get('/dailyLog', userMiddleware, () => {
+    prisma.dailyLog.findFirst({
+        orderBy: {
+            date: 'desc'
+        }
+    })
+})
+
+app.get("/", userMiddleware, (req,res)=>{
     res.send("ok")
 })
 
@@ -112,7 +117,7 @@ app.get("/",userMiddleware,(req,res)=>{
 
 
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 app.listen(port, () => {
     console.log(`Server running on port: ${port}`);

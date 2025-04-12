@@ -15,7 +15,7 @@ export async function userMiddleware(req: Request, res: Response, next: NextFunc
 
         const foundUser = await prisma.user.findUnique({ 
             where: { id: decoded.id },
-            select: { id: true, username: true, email: true }
+            select: { id: true, username: true }
         });
 
         if (!foundUser) {
