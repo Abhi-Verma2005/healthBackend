@@ -1,16 +1,13 @@
-import { Request, Response } from "express";
-import { userMiddleware } from "../middlewares/auth";
+import { Request, Response, Router } from "express";
+import { PrismaClient } from '@prisma/client';
+import { body, validationResult } from 'express-validator';
+import { userMiddleware } from '../middlewares/auth';
 
-// routes/dailyLog.js
-const express = require('express');
-const router = express.Router();
-const { PrismaClient } = require('@prisma/client');
+const router = Router();
 const prisma = new PrismaClient();
-const { body, validationResult } = require('express-validator');
-const auth = require('../middleware/auth');
 
 // Middleware to extract user from token
-router.use(auth);
+router.use(userMiddleware);
 
 // Validate and sanitize input
 const validateDailyLog = [
@@ -23,19 +20,18 @@ const validateDailyLog = [
   body('symptoms').optional().isString(),
 ];
 
-
+// POST: Create or update today's log
 router.post('/', validateDailyLog, async (req: Request, res: Response): Promise<void> => {
   try {
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        res.status(400).json({ errors: errors.array() });
-        return 
+      res.status(400).json({ errors: errors.array() });
+      return;
     }
 
     const { waterIntake, mood, weight, sleepHours, steps, mealQuality, symptoms } = req.body;
-
-    const userId = req.user?.id; 
+    //@ts-expect-error: not needed here
+    const userId = req.user?.id;
     
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -53,37 +49,31 @@ router.post('/', validateDailyLog, async (req: Request, res: Response): Promise<
       }
     });
 
-    let dailyLog;
-    
-    if (existingLog) {
-      // Update existing log
-      dailyLog = await prisma.dailyLog.update({
-        where: { id: existingLog.id },
-        data: {
-          waterIntake,
-          mood,
-          weight,
-          sleepHours,
-          steps,
-          mealQuality,
-          symptoms: symptoms || null,
-        }
-      });
-    } else {
-      // Create new log
-      dailyLog = await prisma.dailyLog.create({
-        data: {
-          userId,
-          waterIntake,
-          mood,
-          weight,
-          sleepHours,
-          steps,
-          mealQuality,
-          symptoms: symptoms || null,
-        }
-      });
-    }
+    const dailyLog = existingLog 
+      ? await prisma.dailyLog.update({
+          where: { id: existingLog.id },
+          data: {
+            waterIntake,
+            mood,
+            weight,
+            sleepHours,
+            steps,
+            mealQuality,
+            symptoms: symptoms || null,
+          }
+        })
+      : await prisma.dailyLog.create({
+          data: {
+            userId,
+            waterIntake,
+            mood,
+            weight,
+            sleepHours,
+            steps,
+            mealQuality,
+            symptoms: symptoms || null,
+          }
+        });
 
     res.status(201).json({
       success: true,
@@ -100,8 +90,9 @@ router.post('/', validateDailyLog, async (req: Request, res: Response): Promise<
 });
 
 // GET: Get today's log for the user
-router.get('/today', async (req: Request, res: Response) => {
+router.get('/today', async (req: Request, res: Response): Promise<void> => {
   try {
+    //@ts-expect-error: no need here
     const userId = req.user?.id;
     
     const today = new Date();
@@ -121,10 +112,11 @@ router.get('/today', async (req: Request, res: Response) => {
     });
 
     if (!dailyLog) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'No log found for today'
       });
+      return;
     }
 
     res.status(200).json({
@@ -142,8 +134,9 @@ router.get('/today', async (req: Request, res: Response) => {
 });
 
 // GET: Get logs for the past 7 days
-router.get('/weekly', async (req: Request, res: Response) => {
+router.get('/weekly', async (req: Request, res: Response): Promise<void> => {
   try {
+    //@ts-expect-error: no need here
     const userId = req.user?.id;
     
     const today = new Date();
@@ -180,4 +173,4 @@ router.get('/weekly', async (req: Request, res: Response) => {
   }
 });
 
-export default router
+export default router;
