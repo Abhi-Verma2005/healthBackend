@@ -93,7 +93,7 @@ router.post('/', validateDailyLog, async (req: Request, res: Response): Promise<
 // GET: Get today's log for the user
 router.get('/today', async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log('daily log hitted')
+
     //@ts-expect-error: no need here
     const userId = req.user?.id;
     
@@ -114,7 +114,7 @@ router.get('/today', async (req: Request, res: Response): Promise<void> => {
     });
 
     if (!dailyLog) {
-      res.status(404).json({
+      res.status(203).json({
         success: false,
         message: 'No log found for today'
       });
