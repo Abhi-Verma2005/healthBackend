@@ -11,35 +11,7 @@ datasource db {
 model User {
   id        String   @id @default(uuid())
   username  String   @unique
-  email     String   @unique
   password  String
-  blogs     Blog[]
+  email     String   @unique
 }
 
-model Blog {
-  id        String    @id @default(uuid())
-  title     String
-  desc      String
-  username  String
-  user      User      @relation(fields: [username], references: [username])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  likes     Like[]
-  comments  Comment[]
-}
-
-model Like {
-  id        String   @id @default(uuid())
-  username  String
-  blogId    String
-  blog      Blog     @relation(fields: [blogId], references: [id])
-}
-
-model Comment {
-  id        String   @id @default(uuid())
-  username  String
-  content   String
-  blogId    String
-  blog      Blog     @relation(fields: [blogId], references: [id])
-  createdAt DateTime @default(now())
-}
