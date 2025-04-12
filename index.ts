@@ -8,6 +8,7 @@ import prisma from "./prisma";
 import { userMiddleware } from "./middlewares/auth";
 import dailyLog from './routes/dailyLog'
 import setGoal from './routes/setGoal'
+import users from './routes/userRoute'
 import cookieParser from "cookie-parser"
 import dailyProgress from "./routes/dailyLogRoutes"
 import "."; 
@@ -147,6 +148,7 @@ app.get("/verify-auth", userMiddleware, async (req: Request, res: Response): Pro
 app.use('/dailyLog', dailyLog)
 app.use('/setGoal', setGoal)
 app.use('/daily-progress', dailyProgress)
+app.use('/users', users)
 
 
 
