@@ -49,7 +49,6 @@ app.post("/signup", async (req: Request, res: Response): Promise<void> => {
         await prisma.user.create({
             data: { username, password: hashedPassword }
         });
-
         res.status(201).json({
             message: "User signed up!",
             username,
