@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import prisma from "./prisma";
 import { userMiddleware } from "./middlewares/auth";
 import dailyLog from './routes/dailyLog'
+import setGoal from './routes/setGoal'
 import cookieParser from "cookie-parser"
 import "."; 
 dotenv.config();
@@ -71,7 +72,7 @@ app.post("/signin", async (req: Request, res: Response): Promise<void> => {
     try {
         const foundUser = await prisma.user.findUnique({ where: { username } });
         if (!foundUser) {
-            res.status(403).json({ message: "User not found!" });
+            res.status(203).json({ message: "User not found!" });
             return 
         }        
         const isPassValid = await bcrypt.compare(password, foundUser.password);
@@ -143,10 +144,7 @@ app.get("/verify-auth", userMiddleware, async (req: Request, res: Response): Pro
 
 
 app.use('/dailyLog', dailyLog)
-
-
-
-
+app.use('/setGoal', setGoal)
 
 
 
