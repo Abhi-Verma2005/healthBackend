@@ -50,35 +50,35 @@ router.post('/', validateDailyLog, async (req: Request, res: Response): Promise<
       }
     });
 
-    const dailyLog = existingLog 
-      ? await prisma.dailyLog.update({
-          where: { id: existingLog.id },
-          data: {
-            waterIntake,
-            mood,
-            weight,
-            sleepHours,
-            steps,
-            mealQuality,
-            symptoms: symptoms || null,
-          }
-        })
-      : await prisma.dailyLog.create({
-          data: {
-            userId,
-            waterIntake,
-            mood,
-            weight,
-            sleepHours,
-            steps,
-            mealQuality,
-            symptoms: symptoms || null,
-          }
-        });
+    // const dailyLog = existingLog 
+    //   ? await prisma.dailyLog.update({
+    //       where: { id: existingLog.id },
+    //       data: {
+    //         waterIntake,
+    //         mood,
+    //         weight,
+    //         sleepHours,
+    //         steps,
+    //         mealQuality,
+    //         symptoms: symptoms || null,
+    //       }
+    //     })
+    //   : await prisma.dailyLog.create({
+    //       data: {
+    //         userId,
+    //         waterIntake,
+    //         mood,
+    //         weight,
+    //         sleepHours,
+    //         steps,
+    //         mealQuality,
+    //         symptoms: symptoms || null,
+    //       }
+    //     });
 
     res.status(201).json({
       success: true,
-      data: dailyLog
+    //   data: dailyLog
     });
   } catch (error) {
     console.error('Error creating daily log:', error);
