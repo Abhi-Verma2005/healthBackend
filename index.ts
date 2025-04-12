@@ -11,6 +11,7 @@ import setGoal from './routes/setGoal'
 import cookieParser from "cookie-parser"
 import dailyProgress from "./routes/dailyLogRoutes"
 import sleepRoutes from "./routes/sleep"
+import moodRoutes from "./routes/mood"
 import "."; 
 dotenv.config();
 const app = express();
@@ -148,6 +149,7 @@ app.use('/dailyLog', dailyLog)
 app.use('/setGoal', setGoal)
 app.use('/daily-progress', dailyProgress)
 app.use('/api/sleep',sleepRoutes)
+app.use('/api/mood',moodRoutes)
 
 
 
