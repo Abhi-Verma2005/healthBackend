@@ -6,21 +6,24 @@ import { z } from "zod";
 import jwt from "jsonwebtoken";
 import prisma from "./prisma";
 import { userMiddleware } from "./middlewares/auth";
+import dailyLog from './routes/dailyLog'
 import cookieParser from "cookie-parser"
+import "."; 
 dotenv.config();
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
-cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  });
 
+app.use(cors({
+    origin: "http://localhost:3000", // or "*" for testing, but better to be specific
+    credentials: true,
+}));
 
 app.post("/signup", async (req: Request, res: Response): Promise<void> => {
     const userpfp = "";
+    console.log('hitted')
 
     const requiredBody = z.object({
         username: z.string().min(3).max(100),
@@ -70,9 +73,7 @@ app.post("/signin", async (req: Request, res: Response): Promise<void> => {
         if (!foundUser) {
             res.status(403).json({ message: "User not found!" });
             return 
-        }
-
-        
+        }        
         const isPassValid = await bcrypt.compare(password, foundUser.password);
         if (!isPassValid) {
             res.status(206).json({ message: "Incorrect Credentials!" });
@@ -101,17 +102,50 @@ app.post("/signin", async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-app.get('/dailyLog', userMiddleware, () => {
-    prisma.dailyLog.findFirst({
-        orderBy: {
-            date: 'desc'
-        }
-    })
-})
+app.get("/verify-auth", userMiddleware, async (req: Request, res: Response): Promise<void> => {
+    console.log('verify')
+    try {
+        //@ts-expect-error: no need here 
+      const userId = req.user?.id;
+      
+      if (!userId) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
+      
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { username: true }
+      });
+      
+      if (!user) {
+        res.status(401).json({ message: "User not found" });
+        return;
+      }
+      
+      res.status(200).json({ username: user.username });
+    } catch (error) {
+      console.error("Verify auth error:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+  
 
-app.get("/", userMiddleware, (req,res)=>{
-    res.send("ok")
-})
+  app.post("/logout", (req: Request, res: Response): void => {
+    console.log('Logout')
+    res.clearCookie("uuid", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict"
+    });
+    res.status(200).json({ message: "Logged out successfully" });
+  });
+
+
+app.use('/dailyLog', dailyLog)
+
+
+
 
 
 
