@@ -6,6 +6,7 @@ import { z } from "zod";
 import jwt from "jsonwebtoken";
 import prisma from "./prisma";
 import { userMiddleware } from "./middlewares/auth";
+import dailyLog from './routes/dailyLog'
 import cookieParser from "cookie-parser"
 dotenv.config();
 const app = express();
@@ -101,17 +102,11 @@ app.post("/signin", async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-app.get('/dailyLog', userMiddleware, () => {
-    prisma.dailyLog.findFirst({
-        orderBy: {
-            date: 'desc'
-        }
-    })
-})
 
-app.get("/", userMiddleware, (req,res)=>{
-    res.send("ok")
-})
+app.use('/dailyLog', dailyLog)
+
+
+
 
 
 
