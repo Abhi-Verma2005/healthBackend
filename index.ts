@@ -9,6 +9,7 @@ import { userMiddleware } from "./middlewares/auth";
 import dailyLog from './routes/dailyLog'
 import setGoal from './routes/setGoal'
 import cookieParser from "cookie-parser"
+import dailyProgress from "./routes/dailyLogRoutes"
 import "."; 
 dotenv.config();
 const app = express();
@@ -144,6 +145,7 @@ app.get("/verify-auth", userMiddleware, async (req: Request, res: Response): Pro
 
 app.use('/dailyLog', dailyLog)
 app.use('/setGoal', setGoal)
+app.use('/daily-progress', dailyProgress)
 
 
 
