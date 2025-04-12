@@ -15,6 +15,8 @@ model User {
   dailyLogs DailyLog[]
 }
 
+// 
+
 model DailyLog {
   id        String     @id @default(uuid())
   user      User       @relation(fields: [userId], references: [id])
