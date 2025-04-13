@@ -111,6 +111,7 @@ router.post('/logout', (req, res) => {
 // Get user profile
 router.get('/profile', userMiddleware, async (req:Request, res:Response) => {
   try {
+    //@ts-expect-error: no need here
     const userId = req.user.userId;
     
     // Find user with their daily logs
@@ -157,6 +158,7 @@ router.get('/profile', userMiddleware, async (req:Request, res:Response) => {
 // Update user profile
 router.put('/profile', userMiddleware, async (req, res) => {
   try {
+    //@ts-expect-error: no need here
     const userId = req.user.userId;
     const { username, goal, age, weight, gender, activityLevel } = req.body;
     
@@ -183,6 +185,7 @@ router.put('/profile', userMiddleware, async (req, res) => {
 // Delete user account
 router.delete('/profile', userMiddleware, async (req, res) => {
   try {
+    //@ts-expect-error: no need here
     const userId = req.user.userId;
     
     // Delete all user data (Prisma will cascade delete related records)
