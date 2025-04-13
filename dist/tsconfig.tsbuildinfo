@@ -1,0 +1,1 @@
+{"root":["../index.ts","../prisma.ts","../routes/dailylog.ts","../routes/dailylogroutes.ts","../routes/health.ts","../routes/meal.ts","../routes/mood.ts","../routes/setgoal.ts","../routes/sleep.ts","../routes/userroute.ts"],"version":"5.8.2"}
