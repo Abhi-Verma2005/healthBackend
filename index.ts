@@ -14,6 +14,7 @@ import dailyProgress from "./routes/dailyLogRoutes"
 import sleepRoutes from "./routes/sleep"
 import moodRoutes from "./routes/mood"
 import mealRoutes from "./routes/meal"
+import health from "./routes/healthRoutes"
 import { registerHealthRoutes } from "./routes/health"
 
 import "."; 
@@ -25,7 +26,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-    origin: "https://health-frontend-gamma.vercel.app", // or "*" for testing, but better to be specific
+    origin: "https://metrics-iq.vercel.app", // or "*" for testing, but better to be specific
     credentials: true,
 }));
 
@@ -148,14 +149,14 @@ app.get("/verify-auth", userMiddleware, async (req: Request, res: Response): Pro
     res.status(200).json({ message: "Logged out successfully" });
   });
 
-
-app.use('/dailyLog', dailyLog)
-app.use('/setGoal', setGoal)
+app.use('/setGoal', setGoal); // Your existing route
+app.use('/health', dailyLog); // Add this line to connect the daily log router
 app.use('/daily-progress', dailyProgress)
 app.use('/users', users)
 app.use('/api/sleep',sleepRoutes)
 app.use('/api/mood',moodRoutes)
-app.use('/nutrition',mealRoutes)
+app.use('/api/nutrition',mealRoutes)
+app.use('/health-goal',health)
 registerHealthRoutes(app);
 
 const port = process.env.PORT || 3001;

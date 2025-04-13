@@ -7,9 +7,6 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 
-
-// Set Health Goal endpoint - corresponds to the GoalSetup page
-// Corrected POST /daily-log route
 router.post('/daily-log', userMiddleware, async (req: Request, res: Response): Promise<void> => {
     const schema = z.object({
       waterIntake: z.number().min(0, "Water intake must be a positive number"),
@@ -20,7 +17,6 @@ router.post('/daily-log', userMiddleware, async (req: Request, res: Response): P
       mealQuality: z.string().min(1, "Meal quality is required"),
       symptoms: z.string().optional(),
       date: z.string().optional(),
-      // Additional fields for detailed tracking
       nutritionData: z.object({
         protein: z.number().min(0),
         fats: z.number().min(0),

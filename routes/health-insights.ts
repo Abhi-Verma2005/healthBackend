@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 // Get detailed health insights for the profile page
 router.get('/health-insights', userMiddleware, async (req: Request, res: Response) => {
   try {
+    //@ts-expect-error: no need here
     const userId = req.user.id;
     
     // Get all logs for the user
