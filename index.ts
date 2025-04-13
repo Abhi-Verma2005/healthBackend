@@ -143,7 +143,7 @@ app.get("/verify-auth", userMiddleware, async (req: Request, res: Response): Pro
     res.clearCookie("uuid", {
       httpOnly: true,
       secure: true,
-      sameSite: "strict"
+      sameSite: "none"
     });
     res.status(200).json({ message: "Logged out successfully" });
   });
@@ -155,7 +155,7 @@ app.use('/daily-progress', dailyProgress)
 app.use('/users', users)
 app.use('/api/sleep',sleepRoutes)
 app.use('/api/mood',moodRoutes)
-app.use('/api/nutrition',mealRoutes)
+app.use('/nutrition',mealRoutes)
 registerHealthRoutes(app);
 
 const port = process.env.PORT || 3001;
