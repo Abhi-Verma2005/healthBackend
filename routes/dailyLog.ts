@@ -6,10 +6,10 @@ import { userMiddleware } from '../middlewares/auth';
 const router = Router();
 const prisma = new PrismaClient();
 
-// Middleware to extract user from token
+
 router.use(userMiddleware);
 
-// Validate and sanitize input
+
 const validateDailyLog = [
   body('waterIntake').isFloat({ min: 0 }).withMessage('Water intake must be a positive number'),
   body('mood').isString().notEmpty().withMessage('Mood is required'),
@@ -20,7 +20,6 @@ const validateDailyLog = [
   body('symptoms').optional().isString(),
 ];
 
-// POST: Create or update today's log
 router.post('/', validateDailyLog, async (req: Request, res: Response): Promise<void> => {
   try {
     const errors = validationResult(req);

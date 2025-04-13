@@ -95,7 +95,7 @@ app.post("/signin", async (req: Request, res: Response): Promise<void> => {
         res.cookie("uuid",token,{
             httpOnly: true,
             secure: true, 
-            sameSite: "strict",
+            sameSite: "none",
           })
         res.status(200).json({
             username: foundUser.username,
