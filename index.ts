@@ -13,6 +13,9 @@ import cookieParser from "cookie-parser"
 import dailyProgress from "./routes/dailyLogRoutes"
 import sleepRoutes from "./routes/sleep"
 import moodRoutes from "./routes/mood"
+import mealRoutes from "./routes/meal"
+import { registerHealthRoutes } from "./routes/health"
+
 import "."; 
 dotenv.config();
 const app = express();
@@ -152,8 +155,8 @@ app.use('/daily-progress', dailyProgress)
 app.use('/users', users)
 app.use('/api/sleep',sleepRoutes)
 app.use('/api/mood',moodRoutes)
-
-
+app.use('/api/nutrition',mealRoutes)
+registerHealthRoutes(app);
 
 const port = process.env.PORT || 3001;
 
