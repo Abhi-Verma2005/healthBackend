@@ -25,7 +25,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-    origin: "http://localhost:3000", // or "*" for testing, but better to be specific
+    origin: "https://health-frontend-gamma.vercel.app", // or "*" for testing, but better to be specific
     credentials: true,
 }));
 
@@ -95,7 +95,7 @@ app.post("/signin", async (req: Request, res: Response): Promise<void> => {
         res.cookie("uuid",token,{
             httpOnly: true,
             secure: true, 
-            sameSite: "strict",
+            sameSite: "none",
           })
         res.status(200).json({
             username: foundUser.username,
