@@ -25,7 +25,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-    origin: "*", // or "*" for testing, but better to be specific
+    origin: "https://health-frontend-gamma.vercel.app", // or "*" for testing, but better to be specific
     credentials: true,
 }));
 
