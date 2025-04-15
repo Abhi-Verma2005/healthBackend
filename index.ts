@@ -31,7 +31,7 @@ app.use(cors({
 }));
 
 const url = `https://healthbackend-kd4p.onrender.com`;
-const interval = 30000;
+const interval = 60000;
 
 function reloadWebsite() {
   axios
