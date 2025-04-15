@@ -30,6 +30,22 @@ app.use(cors({
     credentials: true,
 }));
 
+const url = `https://healthbackend-kd4p.onrender.com`;
+const interval = 30000;
+
+function reloadWebsite() {
+  axios
+    .get(url)
+    .then((response) => {
+      console.log("website reloded");
+    })
+    .catch((error) => {
+      console.error(`Error : ${error.message}`);
+    });
+}
+
+setInterval(reloadWebsite, interval);
+
 app.post("/signup", async (req: Request, res: Response): Promise<void> => {
     const userpfp = "";
     console.log('hitted')
